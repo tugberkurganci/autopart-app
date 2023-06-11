@@ -50,7 +50,7 @@ public class User implements UserDetails {
 
 
     @Column(name = "account_non_locked")
-    private boolean accountNonLocked;
+    private boolean accountNonLocked=true;
     @Column(name = "failed_attempt")
     private int failedAttempt;
     @Column(name = "lock_time")
