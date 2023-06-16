@@ -63,8 +63,8 @@ public class AdminServiceImp implements AdminService {
         }
         User user = adminUsers.get(0);
         String adminEmail = user.getEmail();
-        User whoFromMailUser = userRepository.findById(mailToAdminRequest.getUserId()).orElseThrow();
-        String email = mailToAdminRequest.getEmail() + " from " + whoFromMailUser.getEmail();
+        User whoFromMail=userRepository.findByEmail(mailToAdminRequest.getEmail()).orElseThrow();
+        String email = mailToAdminRequest.getContent() + " from " + mailToAdminRequest.getEmail()+ " user ıd :"+whoFromMail.getId();
         emailSender.sendUserRequest(adminEmail, email);
         log.info("sended mail to adming");
     }

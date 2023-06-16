@@ -29,9 +29,8 @@ public class CreditCardServiceImp implements CreditCardService {
     @Override
     public List<GetAllCreditCardResponse> getAll(int userId) {
         log.info("getting all creditcards...");
-        User user = userRepository.findById(userId).orElseThrow();
 
-        List<CreditCard> creditCards = user.getCreditCards();
+        List<CreditCard> creditCards = creditCardRepository.findByUserId(userId);
 
         List<GetAllCreditCardResponse> responses = creditCards.stream().map(creditCard -> modelMapperService.forResponse().map(creditCard, GetAllCreditCardResponse.class)).collect(Collectors.toList());
 

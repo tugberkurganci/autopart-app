@@ -10,6 +10,7 @@ import com.itg.autopart.responses.GetByIdUserResponse;
 import com.itg.autopart.rules.UserBusinessRules;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -24,6 +25,7 @@ public class UserServiceImp implements UserService {
     private UserRepository userRepository;
     private ModelMapperService userMapperService;
     private UserBusinessRules userBusinessRules;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public List<GetAllUsersResponse> findAll() {
@@ -61,6 +63,15 @@ public class UserServiceImp implements UserService {
         log.info("updating user...");
         //email name check=========
         User user = this.userMapperService.forRequest().map(updateUserRequest, User.class);
+        User realUser=userRepository.findByEmail(updateUserRequest.getEmail()).orElseThrow();
+        user.setId(realUser.getId());
+        user.setUserRole(realUser.getUserRole());
+        user.setEnabled(realUser.isEnabled());
+        user.setAccountNonLocked(realUser.isAccountNonLocked());
+
+        String encodedPassword=bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
+
         this.userRepository.save(user);
         log.info("updated user...");
 

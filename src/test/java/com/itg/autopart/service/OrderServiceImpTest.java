@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.internal.util.Assert;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,19 +47,17 @@ class OrderServiceImpTest {
     void getAll_shouldReturnOrders_whenDataExists(){
 
         //GIVEN
-        Order order = new Order();
-        User user = new User();
-        order.setId(1);
-        user.setOrders(List.of(order));
-        user.setId(1);
+        List<Order>orders=new ArrayList<>();
+        int userId=1;
+        orders.add(new Order());
 
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(orderRepository.findByUserId(userId)).thenReturn(orders);
 
         //WHEN
-        List<GetAllOrderResponse> responses = orderService.getAll(user.getId());
+        List<GetAllOrderResponse> responses = orderService.getAll(userId);
 
         //THEN
-        verify(userRepository).findById(any());
+        verify(orderRepository).findByUserId(userId);
         Assertions.assertEquals(responses.size(),1);
     }
     @Test

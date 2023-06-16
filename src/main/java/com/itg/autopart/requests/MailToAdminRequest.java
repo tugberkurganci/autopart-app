@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class MailToAdminRequest {
 
-    private int userId;
     private String email;
+    private String content;
 
 }

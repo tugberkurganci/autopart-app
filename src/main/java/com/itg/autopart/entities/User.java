@@ -38,17 +38,6 @@ public class User implements UserDetails {
     @Column(name = "password")
     private String password;
 
-
-    @OneToMany(mappedBy = "user")
-    private List<CreditCard> creditCards;
-
-    @Lazy
-    @OneToMany(mappedBy = "user")
-    private List<Order> orders;
-
-
-
-
     @Column(name = "account_non_locked")
     private boolean accountNonLocked=true;
     @Column(name = "failed_attempt")
@@ -59,7 +48,6 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
-    private Boolean locked = false;
     private Boolean enabled =false;
 
     @Override

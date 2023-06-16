@@ -1,12 +1,10 @@
 package com.itg.autopart.service;
 
 import com.itg.autopart.entities.ListedProduct;
-import com.itg.autopart.entities.Order;
 import com.itg.autopart.entities.User;
 import com.itg.autopart.entities.enums.UserRole;
 import com.itg.autopart.mappers.ModelMapperServiceImp;
 import com.itg.autopart.repository.ListedProductRepository;
-import com.itg.autopart.repository.OrderRepository;
 import com.itg.autopart.repository.UserRepository;
 import com.itg.autopart.requests.CreateProductRequestAndAdmin;
 import com.itg.autopart.requests.GiveAdminPermitRequest;
@@ -23,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -83,22 +80,25 @@ class AdminServiceImpTest {
     void mailToAdmin_shouldSendMail_whenInputIsValid(){
 
         MailToAdminRequest mailToAdminRequest =new MailToAdminRequest();
-        mailToAdminRequest.setUserId(2);
-        mailToAdminRequest.setEmail("tutu");
+        mailToAdminRequest.setContent("tutu");
+        mailToAdminRequest.setEmail("email");
         User user=new User();
         user.setUserRole(UserRole.valueOf("ADMIN"));
         user.setEmail("tu");
         List<User> userList=new ArrayList<>();
         userList.add(user);
+        User user2=new User();
+        user2.setEmail(mailToAdminRequest.getEmail());
+        user2.setId(2);
 
-        when(userRepository.findById(any())).thenReturn(Optional.of(user));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(user2));
         when(userRepository.findAll()).thenReturn(userList);
-        doNothing().when(emailSender).sendUserRequest(user.getEmail(),mailToAdminRequest.getEmail()+" from " + user.getEmail());
+        doNothing().when(emailSender).sendUserRequest(anyString(),anyString());
 
         adminService.mailToAdmin(mailToAdminRequest);
 
-        verify(userRepository).findById(any());
-        verify(emailSender).sendUserRequest(user.getEmail(),mailToAdminRequest.getEmail()+" from " + user.getEmail());
+        verify(userRepository).findByEmail(any());
+        verify(emailSender).sendUserRequest(user.getEmail(),mailToAdminRequest.getContent()+" from " + user2.getEmail()+"user ıd :"+user2.getId());
     }
 
 }

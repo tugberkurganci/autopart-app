@@ -27,9 +27,8 @@ public class OrderServiceImp implements OrderService {
     public List<GetAllOrderResponse> getAll(int userId) {
 
         log.info("getting all orders...");
-        User user = userRepository.findById(userId).orElseThrow();
-        List<Order> orders = user.getOrders();
 
+        List<Order> orders =orderRepository.findByUserId(userId);
         List<GetAllOrderResponse> responses = orders.stream().map(order -> modelMapperService.forResponse().map(order, GetAllOrderResponse.class))
                 .collect(Collectors.toList());
         log.info("Orders: {}", responses);

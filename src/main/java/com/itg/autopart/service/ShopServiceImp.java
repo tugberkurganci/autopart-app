@@ -44,11 +44,8 @@ public class ShopServiceImp implements ShopService {
         product.setPrice(oldProduct.getPrice());
         productRepository.save(product);
         oldProduct.setQuantity(oldProduct.getQuantity() - buyProductRequest.getQuantity());
-        UpdateProductRequest updateProductRequest = new UpdateProductRequest();
-        updateProductRequest.setId(oldProduct.getId());
-        updateProductRequest.setName(oldProduct.getName());
-        updateProductRequest.setQuantity(oldProduct.getQuantity());
-        updateProductRequest.setPrice(oldProduct.getPrice());
+
+        UpdateProductRequest updateProductRequest= this.modelMapperService.forResponse().map(oldProduct,UpdateProductRequest.class);
         listedProductService.update(updateProductRequest);
         log.info("added product to Order ...");
     }
@@ -67,12 +64,12 @@ public class ShopServiceImp implements ShopService {
         }
         User user = userRepository.findById(request.getUserId()).orElseThrow();
         Order order = orderRepository.findById(request.getOrderId()).orElseThrow();
-        List<Product> productList = order.getProductList();
+        List<Product> productList = productRepository.findByOrderId(request.getOrderId());
         String email = user.getEmail();
         StringBuilder shoppingInfo = new StringBuilder();
         for (Product product : productList
         ) {
-            shoppingInfo.append("Product name: ").append(product.getName()).append("Quantity :").append(product.getQuantity()).append("Price :").append(product.getPrice());
+            shoppingInfo.append("Product name: ").append(product.getName()).append(" Quantity :").append(product.getQuantity()).append(" Price :").append(product.getPrice());
             shoppingInfo.append(" ");
         }
         shoppingInfo.append("SEND TO ADRESS :").append(request.getAddress());
@@ -89,7 +86,7 @@ public class ShopServiceImp implements ShopService {
         ) {
             if (order.getId() == getAllProductResponseByUserId.getOrderId()) order1 = order;
         }
-        List<Product> productList = order1.getProductList();
+        List<Product> productList = productRepository.findByOrderId(order1.getId());
         List<GetAllProductResponse> productResponseList = new ArrayList<>();
         for (Product product : productList
         ) {
